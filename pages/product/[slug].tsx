@@ -1,13 +1,18 @@
-import { Button, Chip, Grid, Typography } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
+import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ShopLayout } from "../../components/layouts";
 import { ProductSlideShow, SizeSelector } from "../../components/products";
 import { ItemCounter } from "../../components/ui";
-import { initialData } from "../../database/products";
+import { IProduct } from "../../interfaces/products";
+import { GetServerSideProps } from "next";
+import { dbProducts } from "../../database";
 
-const product = initialData.products[0];
+interface Props {
+  product: IProduct;
+}
 
-const ProductPage = () => {
+const ProductPage: NextPage<Props> = ({ product }) => {
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -58,6 +63,58 @@ const ProductPage = () => {
       </Grid>
     </ShopLayout>
   );
+};
+
+// EVITAR USAR SERVERSIDEPROPS
+// export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+//   // const { data } = await  // your fetch function here
+//   const { slug = "" } = params as { slug: string };
+//   const product = await dbProducts.getProductBySlug(slug);
+
+//   if (!product) {
+//     return {
+//       redirect: {
+//         destination: "/",
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   return {
+//     props: {
+//       product,
+//     },
+//   };
+// };
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const slugs = await dbProducts.getAllProductsSlugs();
+
+  return {
+    paths: slugs.map(({ slug }) => ({ params: { slug } })),
+    fallback: "blocking",
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug = "" } = params as { slug: string };
+  const product = await dbProducts.getProductBySlug(slug);
+
+  if (!product) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      product,
+    },
+    revalidate: 86400, // 1 day
+  };
 };
 
 export default ProductPage;
