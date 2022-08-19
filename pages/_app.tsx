@@ -5,8 +5,17 @@ import { lightTheme } from "../themes";
 import { SWRConfig } from "swr";
 import { Provider } from "react-redux";
 import { store } from "../store";
+import { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  // useEffect(() => {
+  //   const cookiesCart = Cookies.get("cart")
+  //     ? JSON.parse(Cookies.get("cart")!)
+  //     : [];
+  //   console.log(cookiesCart);
+  // }, []);
+
   return (
     <Provider store={store}>
       <SWRConfig

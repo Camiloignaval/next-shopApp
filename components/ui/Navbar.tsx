@@ -15,9 +15,10 @@ import NextLink from "next/link";
 import { BiSearchAlt } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../../store/Slices/UISlice";
 import { IoMdClose } from "react-icons/io";
+import { RootState } from "../../store";
 
 export const Navbar = () => {
   const { asPath, push } = useRouter();
@@ -25,6 +26,7 @@ export const Navbar = () => {
   // const pathName = useMemo(() => router.pathname, [router]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const { numberOfItems } = useSelector((state: RootState) => state.cart);
 
   const onSearchTerm = () => {
     if (searchTerm.trim().length === 0) return;
@@ -65,7 +67,7 @@ export const Navbar = () => {
           </NextLink>
         </Box>
         <Box sx={{ flexGrow: 1 }} />
-        {/* pantallas pequeñoas */}
+        {/* pantallas pequeños */}
         <IconButton
           sx={{ display: { xs: "", sm: "none" } }}
           onClick={() => dispatch(toggleMenu())}
@@ -107,7 +109,10 @@ export const Navbar = () => {
         <NextLink href="/cart" passHref>
           <Link>
             <IconButton>
-              <Badge badgeContent={4} color="secondary">
+              <Badge
+                badgeContent={numberOfItems > 9 ? "+9" : numberOfItems}
+                color="secondary"
+              >
                 <AiOutlineShoppingCart />
               </Badge>
             </IconButton>

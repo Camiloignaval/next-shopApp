@@ -1,18 +1,70 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Button, Chip, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { GetStaticProps, GetStaticPaths, NextPage } from "next";
 import { ShopLayout } from "../../components/layouts";
 import { ProductSlideShow, SizeSelector } from "../../components/products";
 import { ItemCounter } from "../../components/ui";
-import { IProduct } from "../../interfaces/products";
 import { GetServerSideProps } from "next";
 import { dbProducts } from "../../database";
+import { useState } from "react";
+import { ICartProduct, IProduct, ISize } from "../../interfaces";
+import { useDispatch, useSelector } from "react-redux";
+import { addOrUpdateCart } from "../../store/Slices/CartSlice";
+import { RootState } from "../../store";
+import { useRouter } from "next/router";
 
 interface Props {
   product: IProduct;
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { cart } = useSelector((state: RootState) => state.cart);
+  const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
+    _id: product._id,
+    image: product.images[0],
+    price: product.price,
+    size: undefined,
+    slug: product.slug,
+    title: product.title,
+    gender: product.gender,
+    quantity: 1,
+  });
+
+  const onSizeClick = (size: ISize) => {
+    setTempCartProduct((prev) => ({
+      ...prev,
+      size,
+    }));
+  };
+  const updatedQuantity = (quantity: number) => {
+    setTempCartProduct((prev) => ({
+      ...prev,
+      quantity,
+    }));
+  };
+
+  const onAddToCart = () => {
+    // let tempCartToSend = [...cart];
+    const productFind = cart.some(
+      (p) => p._id === tempCartProduct._id && p.size === tempCartProduct.size
+    );
+    if (!productFind)
+      return dispatch(addOrUpdateCart([...cart, tempCartProduct]));
+
+    // si el producto ya esta en el carrito tanto id como size, solo aumenta la cantidad
+    const updatedProducts = cart.map((p) => {
+      if (p._id !== tempCartProduct._id) return p;
+      if (p.size !== tempCartProduct.size) return p;
+
+      return { ...p, quantity: p.quantity + tempCartProduct.quantity };
+    });
+
+    dispatch(addOrUpdateCart(updatedProducts));
+    router.push("/cart");
+  };
+
   return (
     <ShopLayout title={product.title} pageDescription={product.description}>
       <Grid container spacing={3}>
@@ -37,24 +89,37 @@ const ProductPage: NextPage<Props> = ({ product }) => {
           {/* Cantidad */}
           <Box sx={{ my: 2 }}>
             <Typography variant="subtitle2">Cantidad</Typography>
-            <ItemCounter />
+            <ItemCounter
+              currentValue={tempCartProduct.quantity}
+              updatedQuantity={updatedQuantity}
+              maxValue={product.inStock}
+            />
             <SizeSelector
               sizes={product.sizes}
-              selectedSize={product.sizes[0]}
+              selectedSize={tempCartProduct.size}
+              onSizeClick={onSizeClick}
             />
           </Box>
           {/* agregar al carrito
            */}
-          <Button
-            className="circular-btn"
-            variant="contained"
-            color="secondary"
-            fullWidth
-          >
-            Agregar al carrito
-          </Button>
+          {product.inStock > 0 ? (
+            <Button
+              onClick={onAddToCart}
+              className="circular-btn"
+              variant="contained"
+              color="secondary"
+              fullWidth
+              disabled={!tempCartProduct.size}
+            >
+              {tempCartProduct.size
+                ? "Agregar al carrito"
+                : "Selecciona una talla"}
+            </Button>
+          ) : (
+            <Chip label="No hay disponible" color="error" variant="outlined" />
+          )}
           {/* <Chip label="No hay disponibles" color="error" /> */}
-          {/* descripcion */}
+          {/* descripción */}
           <Box sx={{ mt: 2 }}>
             <Typography variant="subtitle2">Descripción</Typography>
             <Typography variant="body2">{product.description}</Typography>

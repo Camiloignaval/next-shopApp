@@ -7,11 +7,23 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { CardList, OrdenSummary } from "../../components/cart";
 import { ShopLayout } from "../../components/layouts";
+import { RootState } from "../../store";
 
 const CartPage = () => {
+  const { numberOfItems } = useSelector((state: RootState) => state.cart);
+  const { push } = useRouter();
+
+  useEffect(() => {
+    if (numberOfItems === 0) {
+      push("/cart/empty");
+    }
+  }, [numberOfItems, push]);
+
   return (
     <ShopLayout
       title="Carrito de compras"
