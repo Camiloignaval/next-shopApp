@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import { store } from "../store";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import { Toaster } from "react-hot-toast";
 
 function MyApp({ Component, pageProps }: AppProps) {
   // useEffect(() => {
@@ -27,6 +28,23 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ThemeProvider theme={lightTheme}>
           <CssBaseline />
           <Component {...pageProps} />
+          <Toaster
+            toastOptions={{
+              success: {
+                style: {
+                  background: "green",
+                  color: "white",
+                },
+              },
+              error: {
+                style: {
+                  background: "white",
+                  color: "black",
+                  fontWeight: "500",
+                },
+              },
+            }}
+          />
         </ThemeProvider>
       </SWRConfig>
     </Provider>

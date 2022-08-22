@@ -5,6 +5,7 @@ import Cookie from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { addOrUpdateCart, updateSummary } from "../../store/Slices/CartSlice";
+import { useCheckTokenQuery } from "../../store/RTKQuery/authApi";
 
 interface Props {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ export const ShopLayout: FC<Props> = ({
   const [firstRender, setFirstRender] = useState(true);
   const dispatch = useDispatch();
   const { cart } = useSelector((state: RootState) => state.cart);
+  useCheckTokenQuery();
 
   // atento al carrito
   // -----------------
