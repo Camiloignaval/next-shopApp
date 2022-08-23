@@ -1,9 +1,8 @@
 import { Box, Button, Grid, Link, TextField, Typography } from "@mui/material";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { shopApi } from "../../api";
 import { AuthLayout } from "../../components/layouts";
 import { useRegisterMutation } from "../../store/RTKQuery/authApi";
 import { validations } from "../../utils";
@@ -24,8 +23,13 @@ const RegisterPage = () => {
     formState: { errors },
   } = useForm<FormData>();
 
+  const destination = useMemo(
+    () => router.query?.p?.toString() || "/",
+    [router]
+  );
+
   useEffect(() => {
-    registerState.isSuccess && router.replace("/");
+    registerState.isSuccess && router.replace(destination);
   }, [registerState.isSuccess]);
 
   const onRegisterUser = async ({ email, password, name }: FormData) => {
@@ -109,7 +113,7 @@ const RegisterPage = () => {
               display="flex"
               justifyContent="end"
             >
-              <NextLink href="/auth/login" passHref>
+              <NextLink href={`/auth/login?p=${destination}`} passHref>
                 <Link underline="always">Ya tienes cuenta?</Link>
               </NextLink>
             </Grid>

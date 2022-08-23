@@ -2,8 +2,27 @@ import { RemoveShoppingCartOutlined } from "@mui/icons-material";
 import { Box, Link, Typography } from "@mui/material";
 import { ShopLayout } from "../../components/layouts";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { useEffect } from "react";
 
 const EmptyPage = () => {
+  const { numberOfItems, isLoaded, cart } = useSelector(
+    (state: RootState) => state.cart
+  );
+  const { replace } = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && cart.length > 0) {
+      replace("/cart");
+    }
+  }, [replace, isLoaded]);
+
+  if (!isLoaded || cart.length > 0) {
+    return <></>;
+  }
+
   return (
     <ShopLayout
       title="Carrito vacío"

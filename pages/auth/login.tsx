@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Link, TextField, Typography } from "@mui/material";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AuthLayout } from "../../components/layouts";
 import { useLogInMutation } from "../../store/RTKQuery/authApi";
@@ -21,8 +21,13 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<FormData>();
 
+  const destination = useMemo(
+    () => router.query?.p?.toString() || "/",
+    [router]
+  );
+
   useEffect(() => {
-    loginState.isSuccess && router.replace("/");
+    loginState.isSuccess && router.replace(destination);
   }, [loginState.isSuccess]);
 
   const onLoginUser = async ({ email, password }: FormData) => {
@@ -90,7 +95,7 @@ const LoginPage = () => {
               display="flex"
               justifyContent="end"
             >
-              <NextLink href="/auth/register" passHref>
+              <NextLink href={`/auth/register?p=${destination}`} passHref>
                 <Link underline="always">No tienes cuenta?</Link>
               </NextLink>
             </Grid>

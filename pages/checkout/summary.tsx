@@ -10,10 +10,20 @@ import {
 } from "@mui/material";
 import NextLink from "next/link";
 import React from "react";
+import { useSelector } from "react-redux";
 import { CardList, OrdenSummary } from "../../components/cart";
 import { ShopLayout } from "../../components/layouts";
+import { RootState } from "../../store";
+import { countries } from "../../utils";
 
 const SummaryPage = () => {
+  const { shippingAddress, numberOfItems } = useSelector(
+    (state: RootState) => state.cart
+  );
+  if (!shippingAddress) {
+    return <></>;
+  }
+
   return (
     <ShopLayout
       title="Resumen de compras"
@@ -32,7 +42,8 @@ const SummaryPage = () => {
           <Card className="summary-cart">
             <CardContent>
               <Typography variant="h2" sx={{ marginBottom: 1 }}>
-                Resumen (3 productos)
+                Resumen ({numberOfItems}{" "}
+                {numberOfItems === 1 ? "producto" : "productos"})
               </Typography>
               <Divider sx={{ my: 1 }} />
               <Box display="flex" justifyContent={"space-between"}>
@@ -43,11 +54,22 @@ const SummaryPage = () => {
                   <Link underline="always">Editar</Link>
                 </NextLink>
               </Box>
-              <Typography>Camilo Valenenzuela</Typography>
-              <Typography>987 Algun lugar</Typography>
-              <Typography>Santiago</Typography>
-              <Typography>9898</Typography>
-              <Typography>+569876876</Typography>
+              <Typography>
+                {shippingAddress?.firstName} {shippingAddress?.lastName}
+              </Typography>
+              <Typography>{shippingAddress?.adress}</Typography>
+              {shippingAddress.adress2 !== "" && (
+                <Typography>{shippingAddress?.adress2}</Typography>
+              )}
+              <Typography>
+                {shippingAddress?.city}{" "}
+                {
+                  countries.find((c) => shippingAddress.country === c.code)
+                    ?.name
+                }
+              </Typography>
+              <Typography>{shippingAddress?.zip}</Typography>
+              <Typography>{shippingAddress?.phone}</Typography>
               <Divider sx={{ my: 1 }} />
               <Box display="flex" justifyContent={"end"}>
                 <NextLink href="/cart" passHref>

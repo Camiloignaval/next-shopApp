@@ -15,14 +15,20 @@ import { ShopLayout } from "../../components/layouts";
 import { RootState } from "../../store";
 
 const CartPage = () => {
-  const { numberOfItems } = useSelector((state: RootState) => state.cart);
-  const { push } = useRouter();
+  const { numberOfItems, isLoaded, cart } = useSelector(
+    (state: RootState) => state.cart
+  );
+  const { replace } = useRouter();
 
   useEffect(() => {
-    if (numberOfItems === 0) {
-      push("/cart/empty");
+    if (isLoaded && cart.length === 0) {
+      replace("/cart/empty");
     }
-  }, [numberOfItems, push]);
+  }, [numberOfItems, replace, isLoaded]);
+
+  if (!isLoaded || cart.length === 0) {
+    return <></>;
+  }
 
   return (
     <ShopLayout
@@ -47,7 +53,12 @@ const CartPage = () => {
               <Divider sx={{ my: 1 }} />
               <OrdenSummary />
               <Box sx={{ mt: 3 }}>
-                <Button color="secondary" className="circular-btn" fullWidth>
+                <Button
+                  href="/checkout/adress"
+                  color="secondary"
+                  className="circular-btn"
+                  fullWidth
+                >
                   Checkout
                 </Button>
               </Box>

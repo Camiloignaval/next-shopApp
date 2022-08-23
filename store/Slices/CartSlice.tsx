@@ -1,22 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { ICartProduct } from "../../interfaces/cart";
-import { IProduct, ISize } from "../../interfaces";
+import { IProduct, IShippingAdress, ISize } from "../../interfaces";
 
 export interface CartState {
+  isLoaded: boolean;
   cart: ICartProduct[];
   numberOfItems: number;
   subTotal: number;
   tax: number;
   total: number;
+  shippingAddress?: IShippingAdress;
 }
 
 const initialState: CartState = {
+  isLoaded: false,
   cart: [],
   numberOfItems: 0,
   subTotal: 0,
   tax: 0,
   total: 0,
+  shippingAddress: undefined,
 };
 
 export const CartSlice = createSlice({
@@ -25,6 +29,7 @@ export const CartSlice = createSlice({
   reducers: {
     addOrUpdateCart: (state, action: PayloadAction<ICartProduct[]>) => {
       state.cart = action.payload;
+      state.isLoaded = true;
     },
     udpateCartQuantity: (state, action: PayloadAction<ICartProduct>) => {
       state.cart = state.cart.map((p) => {
@@ -52,6 +57,9 @@ export const CartSlice = createSlice({
         (state.tax = action.payload.tax),
         (state.total = action.payload.total);
     },
+    updateAdress: (state, action: PayloadAction<IShippingAdress>) => {
+      state.shippingAddress = action.payload;
+    },
   },
 });
 
@@ -61,6 +69,7 @@ export const {
   udpateCartQuantity,
   removeFromCart,
   updateSummary,
+  updateAdress,
 } = CartSlice.actions;
 
 export default CartSlice.reducer;

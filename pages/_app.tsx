@@ -8,15 +8,9 @@ import { store } from "../store";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { Toaster } from "react-hot-toast";
+import { PersonalProvider } from "../components/ui/PersonalProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // useEffect(() => {
-  //   const cookiesCart = Cookies.get("cart")
-  //     ? JSON.parse(Cookies.get("cart")!)
-  //     : [];
-  //   console.log(cookiesCart);
-  // }, []);
-
   return (
     <Provider store={store}>
       <SWRConfig
@@ -27,7 +21,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       >
         <ThemeProvider theme={lightTheme}>
           <CssBaseline />
-          <Component {...pageProps} />
+          <PersonalProvider>
+            <Component {...pageProps} />
+          </PersonalProvider>
           <Toaster
             toastOptions={{
               success: {
