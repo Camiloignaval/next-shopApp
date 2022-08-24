@@ -5,6 +5,7 @@ import {
   CardContent,
   Divider,
   Grid,
+  LinearProgress,
   Link,
   Typography,
 } from "@mui/material";
@@ -21,7 +22,7 @@ const SummaryPage = () => {
     (state: RootState) => state.cart
   );
   if (!shippingAddress) {
-    return <></>;
+    return <LinearProgress color="success" />;
   }
 
   return (

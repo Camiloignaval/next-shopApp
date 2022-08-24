@@ -1,8 +1,11 @@
 import Cookie from "js-cookie";
+import { useSession } from "next-auth/react";
 import React, { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { IUser } from "../../interfaces";
 import { RootState } from "../../store";
 import { useCheckTokenQuery } from "../../store/RTKQuery/authApi";
+import { LogIn } from "../../store/Slices/AuthSlice";
 import {
   addOrUpdateCart,
   updateAdress,
@@ -19,12 +22,7 @@ export const PersonalProvider: FC<Props> = ({ children }) => {
   const [firstRender, setFirstRender] = useState(true);
   const dispatch = useDispatch();
   const { cart } = useSelector((state: RootState) => state.cart);
-  try {
-    Cookie.get("token");
-    useCheckTokenQuery();
-  } catch (error) {
-    console.log(error);
-  }
+  // const { data, status } = useSession();
 
   // atento al carrito
   // -----------------
@@ -71,6 +69,21 @@ export const PersonalProvider: FC<Props> = ({ children }) => {
     const address = Cookie.get("address");
     if (address) dispatch(updateAdress(JSON.parse(address)));
   }, []);
+
+  // auth
+  try {
+    Cookie.get("token");
+    useCheckTokenQuery();
+  } catch (error) {
+    console.log(error);
+  }
+
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     console.log({ data });
+  //     dispatch(LogIn(data?.user as IUser));
+  //   }
+  // }, [status, data]);
 
   return <>{children}</>;
 };

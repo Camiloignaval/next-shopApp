@@ -1,4 +1,6 @@
 import { Box, Button, Grid, Link, TextField, Typography } from "@mui/material";
+import { GetServerSideProps } from "next";
+import { getSession, signIn } from "next-auth/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo } from "react";
@@ -33,11 +35,16 @@ const RegisterPage = () => {
   }, [registerState.isSuccess]);
 
   const onRegisterUser = async ({ email, password, name }: FormData) => {
+    // try {
     useRegister({ email, password, name });
+    //   await signIn("credentials", { email, password });
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
-    <AuthLayout title="Iniciar sesión">
+    <AuthLayout title="Registro">
       <form onSubmit={handleSubmit(onRegisterUser)}>
         <Box justifyItems="center" sx={{ width: 350, padding: "10px 20px" }}>
           <Grid container spacing={2}>
@@ -123,5 +130,26 @@ const RegisterPage = () => {
     </AuthLayout>
   );
 };
+
+// export const getServerSideProps: GetServerSideProps = async ({
+//   req,
+//   query,
+// }) => {
+//   const session = await getSession({ req });
+//   console.log({ session });
+//   const { p = "/" } = query;
+//   if (session) {
+//     return {
+//       redirect: {
+//         destination: p.toString(),
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   return {
+//     props: {},
+//   };
+// };
 
 export default RegisterPage;

@@ -17,7 +17,6 @@ export const UISlice = createSlice({
   initialState,
   reducers: {
     LogIn: (state, action: PayloadAction<IUser>) => {
-      console.log("entreeee");
       state.isLoggedIn = true;
       state.user = action.payload;
     },

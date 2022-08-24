@@ -1,4 +1,13 @@
-import { Box, Button, Grid, Link, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+  Divider,
+} from "@mui/material";
+import { getSession, signIn, getProviders } from "next-auth/react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
@@ -6,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { AuthLayout } from "../../components/layouts";
 import { useLogInMutation } from "../../store/RTKQuery/authApi";
 import { validations } from "../../utils";
+import { GetServerSideProps } from "next";
 
 type FormData = {
   email: string;
@@ -26,12 +36,21 @@ const LoginPage = () => {
     [router]
   );
 
+  const [providers, setProviders] = useState<any>({});
+
+  useEffect(() => {
+    getProviders().then((prov) => {
+      setProviders(prov);
+    });
+  }, []);
+
   useEffect(() => {
     loginState.isSuccess && router.replace(destination);
   }, [loginState.isSuccess]);
 
   const onLoginUser = async ({ email, password }: FormData) => {
     logIn({ email, password });
+    // signIn("credentials", { email, password });
   };
 
   return (
@@ -99,11 +118,57 @@ const LoginPage = () => {
                 <Link underline="always">No tienes cuenta?</Link>
               </NextLink>
             </Grid>
+            {/* <Grid
+              marginTop={2}
+              item
+              xs={12}
+              display="flex"
+              flexDirection="column"
+              justifyContent="end"
+            >
+              <Divider sx={{ width: "100%", mb: 2 }} />
+              {Object.values(providers)
+                .filter((p: any) => p.id !== "credentials")
+                .map((provider: any) => {
+                  return (
+                    <Button
+                      key={provider.id}
+                      variant="outlined"
+                      fullWidth
+                      color="primary"
+                      sx={{ mb: 1 }}
+                      onClick={() => signIn(provider.id)}
+                    >
+                      {provider.name}
+                    </Button>
+                  );
+                })}
+            </Grid> */}
           </Grid>
         </Box>
       </form>
     </AuthLayout>
   );
 };
+
+// export const getServerSideProps: GetServerSideProps = async ({
+//   req,
+//   query,
+// }) => {
+//   const session = await getSession({ req });
+//   const { p = "/" } = query;
+//   if (session) {
+//     return {
+//       redirect: {
+//         destination: p.toString(),
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   return {
+//     props: {},
+//   };
+// };
 
 export default LoginPage;

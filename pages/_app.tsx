@@ -9,9 +9,11 @@ import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { Toaster } from "react-hot-toast";
 import { PersonalProvider } from "../components/ui/PersonalProvider";
+import { SessionProvider } from "next-auth/react";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
+    // <SessionProvider>
     <Provider store={store}>
       <SWRConfig
         value={{
@@ -44,6 +46,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </ThemeProvider>
       </SWRConfig>
     </Provider>
+    // </SessionProvider>
   );
 }
 

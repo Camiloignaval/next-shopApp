@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify, type JWTPayload } from "jose";
+import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
   const pathName = req.nextUrl.pathname;
@@ -10,7 +11,6 @@ export async function middleware(req: NextRequest) {
 
   if (req.nextUrl.pathname.startsWith("/checkout")) {
     let { value } = req.cookies.getWithOptions("token");
-    console.log({ value });
     if (!value) {
       return NextResponse.redirect(urlToReturn);
     }
