@@ -3,6 +3,9 @@ import UIReducer from "./Slices/UISlice";
 import CartReducer from "./Slices/CartSlice";
 import AuthReducer from "./Slices/AuthSlice";
 import { authApi } from "./RTKQuery/authApi";
+import { ordersApi } from "./RTKQuery/ordersApi";
+
+const apisMiddlewares = [authApi.middleware, ordersApi.middleware];
 
 export const store = configureStore({
   reducer: {
@@ -10,9 +13,10 @@ export const store = configureStore({
     cart: CartReducer,
     auth: AuthReducer,
     [authApi.reducerPath]: authApi.reducer,
+    [ordersApi.reducerPath]: ordersApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware),
+    getDefaultMiddleware().concat(apisMiddlewares),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

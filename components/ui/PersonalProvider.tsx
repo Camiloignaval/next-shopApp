@@ -22,7 +22,7 @@ export const PersonalProvider: FC<Props> = ({ children }) => {
   const [firstRender, setFirstRender] = useState(true);
   const dispatch = useDispatch();
   const { cart } = useSelector((state: RootState) => state.cart);
-  // const { data, status } = useSession();
+  const { data, status } = useSession();
 
   // atento al carrito
   // -----------------
@@ -71,19 +71,19 @@ export const PersonalProvider: FC<Props> = ({ children }) => {
   }, []);
 
   // auth
-  try {
-    Cookie.get("token");
-    useCheckTokenQuery();
-  } catch (error) {
-    console.log(error);
-  }
+  // try {
+  //   Cookie.get("token");
+  //   useCheckTokenQuery();
+  // } catch (error) {
+  //   console.log(error);
+  // }
 
-  // useEffect(() => {
-  //   if (status === "authenticated") {
-  //     console.log({ data });
-  //     dispatch(LogIn(data?.user as IUser));
-  //   }
-  // }, [status, data]);
+  // * effect para nextauth
+  useEffect(() => {
+    if (status === "authenticated") {
+      dispatch(LogIn(data?.user as IUser));
+    }
+  }, [status, data]);
 
   return <>{children}</>;
 };

@@ -35,12 +35,12 @@ const RegisterPage = () => {
   }, [registerState.isSuccess]);
 
   const onRegisterUser = async ({ email, password, name }: FormData) => {
-    // try {
-    useRegister({ email, password, name });
-    //   await signIn("credentials", { email, password });
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    try {
+      useRegister({ email, password, name });
+      await signIn("credentials", { email, password });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -131,25 +131,24 @@ const RegisterPage = () => {
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async ({
-//   req,
-//   query,
-// }) => {
-//   const session = await getSession({ req });
-//   console.log({ session });
-//   const { p = "/" } = query;
-//   if (session) {
-//     return {
-//       redirect: {
-//         destination: p.toString(),
-//         permanent: false,
-//       },
-//     };
-//   }
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
+  const session = await getSession({ req });
+  const { p = "/" } = query;
+  if (session) {
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false,
+      },
+    };
+  }
 
-//   return {
-//     props: {},
-//   };
-// };
+  return {
+    props: {},
+  };
+};
 
 export default RegisterPage;

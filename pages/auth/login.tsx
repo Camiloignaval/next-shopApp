@@ -49,8 +49,9 @@ const LoginPage = () => {
   }, [loginState.isSuccess]);
 
   const onLoginUser = async ({ email, password }: FormData) => {
-    logIn({ email, password });
-    // signIn("credentials", { email, password });
+    // logIn({ email, password });
+    // * linea para nexauth
+    signIn("credentials", { email, password });
   };
 
   return (
@@ -118,7 +119,8 @@ const LoginPage = () => {
                 <Link underline="always">No tienes cuenta?</Link>
               </NextLink>
             </Grid>
-            {/* <Grid
+            {/* providers nextauth */}
+            <Grid
               marginTop={2}
               item
               xs={12}
@@ -143,7 +145,7 @@ const LoginPage = () => {
                     </Button>
                   );
                 })}
-            </Grid> */}
+            </Grid>
           </Grid>
         </Box>
       </form>
@@ -151,24 +153,24 @@ const LoginPage = () => {
   );
 };
 
-// export const getServerSideProps: GetServerSideProps = async ({
-//   req,
-//   query,
-// }) => {
-//   const session = await getSession({ req });
-//   const { p = "/" } = query;
-//   if (session) {
-//     return {
-//       redirect: {
-//         destination: p.toString(),
-//         permanent: false,
-//       },
-//     };
-//   }
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
+  const session = await getSession({ req });
+  const { p = "/" } = query;
+  if (session) {
+    return {
+      redirect: {
+        destination: p.toString(),
+        permanent: false,
+      },
+    };
+  }
 
-//   return {
-//     props: {},
-//   };
-// };
+  return {
+    props: {},
+  };
+};
 
 export default LoginPage;

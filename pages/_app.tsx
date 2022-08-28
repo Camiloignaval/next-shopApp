@@ -13,40 +13,40 @@ import { SessionProvider } from "next-auth/react";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    // <SessionProvider>
-    <Provider store={store}>
-      <SWRConfig
-        value={{
-          fetcher: (resource, init) =>
-            fetch(resource, init).then((res) => res.json()),
-        }}
-      >
-        <ThemeProvider theme={lightTheme}>
-          <CssBaseline />
-          <PersonalProvider>
-            <Component {...pageProps} />
-          </PersonalProvider>
-          <Toaster
-            toastOptions={{
-              success: {
-                style: {
-                  background: "green",
-                  color: "white",
+    <SessionProvider>
+      <Provider store={store}>
+        <SWRConfig
+          value={{
+            fetcher: (resource, init) =>
+              fetch(resource, init).then((res) => res.json()),
+          }}
+        >
+          <ThemeProvider theme={lightTheme}>
+            <CssBaseline />
+            <PersonalProvider>
+              <Component {...pageProps} />
+            </PersonalProvider>
+            <Toaster
+              toastOptions={{
+                success: {
+                  style: {
+                    background: "green",
+                    color: "white",
+                  },
                 },
-              },
-              error: {
-                style: {
-                  background: "white",
-                  color: "black",
-                  fontWeight: "500",
+                error: {
+                  style: {
+                    background: "white",
+                    color: "black",
+                    fontWeight: "500",
+                  },
                 },
-              },
-            }}
-          />
-        </ThemeProvider>
-      </SWRConfig>
-    </Provider>
-    // </SessionProvider>
+              }}
+            />
+          </ThemeProvider>
+        </SWRConfig>
+      </Provider>
+    </SessionProvider>
   );
 }
 

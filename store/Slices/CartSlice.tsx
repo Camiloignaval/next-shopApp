@@ -60,6 +60,13 @@ export const CartSlice = createSlice({
     updateAdress: (state, action: PayloadAction<IShippingAdress>) => {
       state.shippingAddress = action.payload;
     },
+    cleanCart: (state) => {
+      state.cart = [];
+      state.numberOfItems = 0;
+      state.subTotal = 0;
+      state.tax = 0;
+      state.total = 0;
+    },
   },
 });
 
@@ -70,6 +77,7 @@ export const {
   removeFromCart,
   updateSummary,
   updateAdress,
+  cleanCart,
 } = CartSlice.actions;
 
 export default CartSlice.reducer;

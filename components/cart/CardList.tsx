@@ -13,7 +13,7 @@ import { ItemCounter } from "../ui";
 import { IProduct } from "../../interfaces/products";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { ICartProduct } from "../../interfaces";
+import { ICartProduct, IOrderItem } from "../../interfaces";
 import {
   removeFromCart,
   udpateCartQuantity,
@@ -21,10 +21,14 @@ import {
 
 interface Props {
   editable?: boolean;
+  products?: IOrderItem[];
 }
-export const CardList: FC<Props> = ({ editable = false }) => {
+export const CardList: FC<Props> = ({ editable = false, products }) => {
   const dispatch = useDispatch();
   const { cart } = useSelector((state: RootState) => state.cart);
+  const [productToShow, setproductToShow] = useState<
+    IOrderItem[] | ICartProduct[]
+  >([]);
 
   const onNewCartQty = (product: ICartProduct, newQty: number) => {
     const productClone = { ...product };
@@ -36,9 +40,17 @@ export const CardList: FC<Props> = ({ editable = false }) => {
     dispatch(removeFromCart(product));
   };
 
+  useEffect(() => {
+    if (products) {
+      setproductToShow(products);
+    } else {
+      setproductToShow(cart);
+    }
+  }, []);
+
   return (
     <>
-      {cart.map((product) => (
+      {productToShow.map((product) => (
         <Grid container spacing={3} key={product.slug + product.size}>
           <Grid item xs={3}>
             <NextLink href={`/product/${product.slug}`} passHref>
@@ -60,7 +72,9 @@ export const CardList: FC<Props> = ({ editable = false }) => {
                 Talla: <strong>{product.size}</strong>
                 {editable ? (
                   <ItemCounter
-                    updatedQuantity={(qty) => onNewCartQty(product, qty)}
+                    updatedQuantity={(qty) =>
+                      onNewCartQty(product as ICartProduct, qty)
+                    }
                     currentValue={product.quantity}
                     maxValue={10}
                   />
@@ -80,10 +94,10 @@ export const CardList: FC<Props> = ({ editable = false }) => {
             alignItems="center"
             flexDirection="column"
           >
-            <Typography variant="subtitle1">${product.price}</Typography>
+            <Typography variant="subtitle1">{`$${product.price}`}</Typography>
             {editable && (
               <Button
-                onClick={() => handleDelete(product)}
+                onClick={() => handleDelete(product as ICartProduct)}
                 variant="text"
                 color="secondary"
               >
