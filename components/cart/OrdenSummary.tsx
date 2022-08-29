@@ -34,7 +34,7 @@ export const OrdenSummary: FC<Props> = ({ infoPrices }) => {
         total: cart.total,
       });
     }
-  }, []);
+  }, [cart]);
 
   return (
     <Grid container>

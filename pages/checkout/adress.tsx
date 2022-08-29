@@ -35,6 +35,7 @@ const getAdressFromCookies = (): IShippingAdress => {
 };
 
 const AdressPage = () => {
+  console.log("llegue1");
   const dispatch = useDispatch();
   const router = useRouter();
   const {

@@ -16,6 +16,17 @@ export const ordersApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
+    getOrder: builder.query<IResponse, IOrder>({
+      query: (orderId) => ({
+        url: `/orders/${orderId}`,
+        method: "get",
+      }),
+      onQueryStarted(_, { queryFulfilled }) {
+        queryFulfilled.catch(() => {
+          toast.error("Ha ocurrido un error al obtener orden");
+        });
+      },
+    }),
     createOrder: builder.mutation<IResponse, IOrder>({
       query: (body) => ({
         url: `/orders`,
@@ -35,7 +46,25 @@ export const ordersApi = createApi({
         });
       },
     }),
+    payOrder: builder.mutation<
+      IResponse,
+      { transactionId: string; orderId: string }
+    >({
+      query: (body) => ({
+        url: `/orders/pay`,
+        method: "post",
+        body,
+      }),
+      onQueryStarted(_, { queryFulfilled, dispatch }) {
+        toast.promise(queryFulfilled, {
+          loading: "Finalizando pago...",
+          success: "Orden pagada con éxito",
+          error: ({ error }) => error.data.message.toString(),
+        });
+      },
+    }),
   }),
 });
 
-export const { useCreateOrderMutation } = ordersApi;
+export const { useCreateOrderMutation, useGetOrderQuery, usePayOrderMutation } =
+  ordersApi;
