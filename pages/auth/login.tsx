@@ -46,7 +46,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     loginState.isSuccess && router.replace(destination);
-  }, [loginState.isSuccess]);
+  }, [loginState.isSuccess, router]);
 
   const onLoginUser = async ({ email, password }: FormData) => {
     // logIn({ email, password });

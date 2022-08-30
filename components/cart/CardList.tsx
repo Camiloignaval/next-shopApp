@@ -46,7 +46,7 @@ export const CardList: FC<Props> = ({ editable = false, products }) => {
     } else {
       setproductToShow(cart);
     }
-  }, [cart]);
+  }, [cart, products]);
 
   return (
     <>

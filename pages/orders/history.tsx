@@ -3,11 +3,9 @@ import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import NextLink from "next/link";
 import { ShopLayout } from "../../components/layouts";
 import { GetServerSideProps, NextPage } from "next";
-import { FC } from "react";
 import { getSession } from "next-auth/react";
-import { redirect } from "next/dist/server/api-utils";
 import { dbOrders } from "../../database";
-import { IOrder, IOrderItem } from "../../interfaces";
+import { IOrder } from "../../interfaces";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 100 },

@@ -14,8 +14,20 @@ interface IResponse {
 export const ordersApi = createApi({
   reducerPath: "ordersApi",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
-  tagTypes: ["Orders"],
+  tagTypes: ["Orders", "Order"],
   endpoints: (builder) => ({
+    getAllOrders: builder.query<IOrder[], null>({
+      query: () => ({
+        url: `/admin/orders`,
+        method: "get",
+      }),
+      providesTags: ["Orders"],
+      onQueryStarted(_, { queryFulfilled }) {
+        queryFulfilled.catch(() => {
+          toast.error("Ha ocurrido un error al obtener ordenes");
+        });
+      },
+    }),
     getOrder: builder.query<IResponse, IOrder>({
       query: (orderId) => ({
         url: `/orders/${orderId}`,
@@ -66,5 +78,9 @@ export const ordersApi = createApi({
   }),
 });
 
-export const { useCreateOrderMutation, useGetOrderQuery, usePayOrderMutation } =
-  ordersApi;
+export const {
+  useCreateOrderMutation,
+  useGetOrderQuery,
+  usePayOrderMutation,
+  useGetAllOrdersQuery,
+} = ordersApi;

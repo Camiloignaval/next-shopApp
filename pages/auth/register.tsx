@@ -17,7 +17,7 @@ type FormData = {
 
 const RegisterPage = () => {
   const router = useRouter();
-  const [useRegister, registerState] = useRegisterMutation();
+  const [doRegister, registerState] = useRegisterMutation();
 
   const {
     register,
@@ -32,11 +32,11 @@ const RegisterPage = () => {
 
   useEffect(() => {
     registerState.isSuccess && router.replace(destination);
-  }, [registerState.isSuccess]);
+  }, [registerState.isSuccess, router]);
 
   const onRegisterUser = async ({ email, password, name }: FormData) => {
     try {
-      useRegister({ email, password, name });
+      doRegister({ email, password, name });
       await signIn("credentials", { email, password });
     } catch (error) {
       console.log(error);

@@ -41,7 +41,7 @@ export const PersonalProvider: FC<Props> = ({ children }) => {
   useEffect(() => {
     if (firstRender) return;
     Cookie.set("cart", JSON.stringify(cart));
-  }, [cart]);
+  }, [cart, firstRender]);
 
   // calculo de precios
   useEffect(() => {
@@ -60,7 +60,7 @@ export const PersonalProvider: FC<Props> = ({ children }) => {
       total,
     };
     dispatch(updateSummary(ordenSummary));
-  }, [cart]);
+  }, [cart, dispatch]);
 
   // -----------------
 
@@ -68,7 +68,7 @@ export const PersonalProvider: FC<Props> = ({ children }) => {
   useEffect(() => {
     const address = Cookie.get("address");
     if (address) dispatch(updateAdress(JSON.parse(address)));
-  }, []);
+  }, [dispatch]);
 
   // auth
   // try {
@@ -83,7 +83,7 @@ export const PersonalProvider: FC<Props> = ({ children }) => {
     if (status === "authenticated") {
       dispatch(LogIn(data?.user as IUser));
     }
-  }, [status, data]);
+  }, [status, data, dispatch]);
 
   return <>{children}</>;
 };

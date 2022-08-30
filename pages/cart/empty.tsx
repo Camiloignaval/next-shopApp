@@ -17,7 +17,7 @@ const EmptyPage = () => {
     if (isLoaded && cart.length > 0) {
       replace("/cart");
     }
-  }, [replace, isLoaded]);
+  }, [replace, isLoaded, cart.length]);
 
   if (!isLoaded || cart.length > 0) {
     return <></>;
