@@ -3,8 +3,6 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { getSession } from "next-auth/react";
 
-type ResponseBody = { message: string };
-
 export async function middleware(req: NextRequest) {
   // console.log({ req });
   const cookie = req.headers.get("cookie");
