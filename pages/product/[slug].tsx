@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addOrUpdateCart } from "../../store/Slices/CartSlice";
 import { RootState } from "../../store";
 import { useRouter } from "next/router";
+import Swal from "sweetalert2";
 
 interface Props {
   product: IProduct;
@@ -45,14 +46,33 @@ const ProductPage: NextPage<Props> = ({ product }) => {
     }));
   };
 
+  const alertGoToCart = () => {
+    Swal.fire({
+      title: "Quieres seguir comprando?",
+      showDenyButton: true,
+      showCancelButton: false,
+      confirmButtonText: "Si!",
+      confirmButtonColor: "#3A64D8",
+      denyButtonColor: "#3A64D8",
+      denyButtonText: `No, continuar al carrito`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        router.push("/");
+      } else if (result.isDenied) {
+        router.push("/cart");
+      }
+    });
+  };
+
   const onAddToCart = () => {
-    // let tempCartToSend = [...cart];
     const productFind = cart.some(
       (p) => p._id === tempCartProduct._id && p.size === tempCartProduct.size
     );
-    if (!productFind)
+    if (!productFind) {
+      alertGoToCart();
       return dispatch(addOrUpdateCart([...cart, tempCartProduct]));
-
+    }
     // si el producto ya esta en el carrito tanto id como size, solo aumenta la cantidad
     const updatedProducts = cart.map((p) => {
       if (p._id !== tempCartProduct._id) return p;
@@ -62,7 +82,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
     });
 
     dispatch(addOrUpdateCart(updatedProducts));
-    router.push("/cart");
+    alertGoToCart();
   };
 
   return (
