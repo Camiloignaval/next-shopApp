@@ -18,7 +18,7 @@ const productSchema = new Schema(
     ],
     slug: { type: String, required: true, unique: true },
     tags: [{ type: String }],
-    title: { type: String, required: true },
+    title: { type: String, required: true, default: "" },
     type: {
       type: String,
       required: true,
@@ -26,6 +26,7 @@ const productSchema = new Schema(
         values: ["shirts", "pants", "hoodies", "hats"],
         message: "{VALUE} is not a valid type",
       },
+      default: "shirts",
     },
     gender: {
       type: String,
@@ -34,6 +35,7 @@ const productSchema = new Schema(
         values: ["men", "women", "kid", "unisex"],
         message: "{VALUE} is not a valid gender",
       },
+      default: "womem",
     },
   },
   { timestamps: true }

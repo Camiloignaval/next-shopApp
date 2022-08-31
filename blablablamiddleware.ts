@@ -13,7 +13,6 @@ export async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
 
   if (req.nextUrl.pathname.startsWith("/api/admin")) {
-    console.log("entre aqui");
     if (!session) {
       return NextResponse.redirect(new URL(`/api/auth/unauthorized`, req.url));
     }
@@ -22,7 +21,6 @@ export async function middleware(req: NextRequest) {
     }
   }
   if (req.nextUrl.pathname.startsWith("/admin")) {
-    console.log("no tengo sesion para entrar");
     if (!session) {
       return NextResponse.redirect(
         `${url.origin}/auth/login?p=${req.nextUrl.pathname}`

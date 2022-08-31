@@ -1,6 +1,7 @@
 import { db } from ".";
 import { IProduct } from "../interfaces";
 import { Product } from "../models";
+import { linkConvert } from "../utils";
 
 export const getProductBySlug = async (
   slug: string
@@ -11,6 +12,13 @@ export const getProductBySlug = async (
   if (!product) {
     return null;
   }
+
+  product.images = product.images.map((image) => {
+    return image.includes("http")
+      ? image
+      : `${process.env.HOST_NAME}products/${image}`;
+  });
+
   return JSON.parse(JSON.stringify(product));
 };
 
@@ -33,7 +41,9 @@ export const getProductsByTerm = async (term: string): Promise<IProduct[]> => {
     .lean();
   db.disconnect();
 
-  return JSON.parse(JSON.stringify(products));
+  const updatedProducts = linkConvert(products);
+
+  return JSON.parse(JSON.stringify(updatedProducts));
 };
 
 export const getAllProducts = async (): Promise<IProduct[]> => {
@@ -43,5 +53,7 @@ export const getAllProducts = async (): Promise<IProduct[]> => {
     .lean();
   db.disconnect();
 
-  return JSON.parse(JSON.stringify(products));
+  const updatedProducts = linkConvert(products);
+
+  return JSON.parse(JSON.stringify(updatedProducts));
 };

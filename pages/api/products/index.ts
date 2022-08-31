@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { db, SHOP_CONSTANT } from "../../../database";
 import { IProduct } from "../../../interfaces";
 import { Product } from "../../../models";
+import { linkConvert } from "../../../utils";
 
 type Data =
   | {
@@ -36,5 +37,8 @@ const getProducts = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     .select("title slug price inStock images -_id")
     .lean();
   await db.disconnect();
-  res.status(200).json(products);
+
+  const productsConverted = linkConvert(products);
+
+  res.status(200).json(productsConverted);
 };

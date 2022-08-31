@@ -5,11 +5,15 @@ import AuthReducer from "./Slices/AuthSlice";
 import { authApi } from "./RTKQuery/authApi";
 import { ordersApi } from "./RTKQuery/ordersApi";
 import { adminApi } from "./RTKQuery/adminApi";
+import { productsApi } from "./RTKQuery/productsApi";
+import { uploadApi } from "./RTKQuery/uploadApi";
 
 const apisMiddlewares = [
   authApi.middleware,
   ordersApi.middleware,
   adminApi.middleware,
+  productsApi.middleware,
+  uploadApi.middleware,
 ];
 
 export const store = configureStore({
@@ -20,6 +24,8 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [ordersApi.reducerPath]: ordersApi.reducer,
     [adminApi.reducerPath]: adminApi.reducer,
+    [productsApi.reducerPath]: productsApi.reducer,
+    [uploadApi.reducerPath]: uploadApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apisMiddlewares),
